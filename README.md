@@ -1,1 +1,1 @@
-# GOV.UK Moodle Assessment activity 
+# GOV.UK Moodle Assessment activity
