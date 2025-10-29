@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping https://www.doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="mod_assessment\Entity\AssessmentTypeItem" inheritance-type="SINGLE_TABLE" table="mdl_assessment_type_item">
+    <id name="id" type="integer">
+      <generator strategy="IDENTITY"/>
+    </id>
+    <field name="name" type="string" length="255" nullable="false"/>
+    <field name="description" type="string" length="1000" nullable="true"/>
+    <field name="guidanceBefore" type="text" nullable="true"/>
+    <field name="guidanceAfter" type="text" nullable="true"/>
+    <field name="displayOrder" type="integer" nullable="true"/>
+    <many-to-one field="assessmentTypeSection" target-entity="mod_assessment\Entity\AssessmentTypeSection" inversed-by="assessmentTypeItems">
+      <join-columns>
+        <join-column name="assessment_type_section_id" referenced-column-name="id" nullable="false"/>
+      </join-columns>
+    </many-to-one>
+    <discriminator-column name="type" length="255" type="string"/>
+    <discriminator-map>
+      <discriminator-mapping class="mod_assessment\Entity\AssessmentTypeItem" value="item"/>
+      <discriminator-mapping class="mod_assessment\Entity\AssessmentTypeField" value="field"/>
+      <discriminator-mapping class="mod_assessment\Entity\AssessmentTypeObjective" value="objective"/>
+    </discriminator-map>
+  </entity>
+</doctrine-mapping>

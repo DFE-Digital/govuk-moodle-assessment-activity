@@ -1,0 +1,68 @@
+<h2>
+  {% if assessmentType.id %}
+    Edit assessment type: {{ assessmentType.name }}
+  {% else %}
+    Create assessment type
+  {% endif %}
+</h2>
+
+{% for type, messages in flash_messages %}
+    {% for message in messages %}
+        <div class="alert alert-{{ type }}">
+            {{ message }}
+        </div>
+    {% endfor %}
+{% endfor %}
+
+{{ form_start(form) }}
+  {{ form_row(form.name) }}
+  {{ form_row(form.guidance_before) }}
+  {{ form_row(form.guidance_after) }}
+
+  {% if assessmentType.id %}
+    <h3>Sections</h3>
+
+    <a href="{{ path('assessment_type_section_new', {'assessmentTypeId': assessmentType.id}) }}">Add section</a>
+
+    <div id="assessment-type-sections">
+      {% for assessmentTypeSection in assessmentType.assessmentTypeSections %}
+          <table class="generaltable">
+            <thead>
+              <tr>
+                <td>
+                  <strong>{{ assessmentTypeSection.name }}</strong>
+                </td>
+                <td>
+                  <a href="{{ path('assessment_type_section_edit', {'id': assessmentTypeSection.id}) }}">Edit</a>
+                </td>
+              </tr>
+            </thead>
+            <tbody>
+              {% for assessmentTypeItem in assessmentTypeSection.assessmentTypeItems %}
+                <tr>
+                  <td>
+                    {{ assessmentTypeItem.name }}
+                  </td>
+                  <td>
+                    {{ assessmentTypeItem.description }}
+                  </td>
+                </tr>
+              {% else %}
+                <tr>
+                  <td colspan="3">No items</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <div style="display:none;">
+    {{ form_rest(form) }}
+  </div>
+
+  <button type="submit" class="btn btn-primary">
+    Save
+  </button>
+{{ form_end(form) }}

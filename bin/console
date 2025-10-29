@@ -1,0 +1,59 @@
+#!/usr/bin/env php
+<?php
+
+// Moodle configuration, to access $CFG
+define('CLI_SCRIPT', true);
+define('NO_UPGRADE_CHECK', true);
+require_once(__DIR__ . '/../../../config.php');
+
+// Symfony autoloader
+require __DIR__ . '/../vendor/autoload.php';
+
+use Doctrine\DBAL\DriverManager;
+use Doctrine\Migrations\Configuration\EntityManager\ExistingEntityManager;
+use Doctrine\Migrations\Configuration\Migration\PhpFile;
+use Doctrine\Migrations\DependencyFactory;
+use Doctrine\Migrations\Tools\Console\Command\{DiffCommand, MigrateCommand, StatusCommand};
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\Mapping\UnderscoreNamingStrategy;
+use Doctrine\ORM\ORMSetup;
+use Symfony\Component\Console\Application;
+
+// Doctrine connection
+$connection = DriverManager::getConnection([
+    'driver' => 'pdo_pgsql',
+    'host' => $CFG->dbhost,
+    'user' => $CFG->dbuser,
+    'password' => $CFG->dbpass,
+    'dbname' => $CFG->dbname,
+]);
+
+// Doctrine configuration
+$doctrinePaths = [__DIR__ . '/../doctrine'];
+$isDevMode = true;
+$config = ORMSetup::createXMLMetadataConfiguration(
+    $doctrinePaths,
+    $isDevMode,
+);
+// Lower snake-case field names (eg class property createdAt > database column created_at)
+$config->setNamingStrategy(new UnderscoreNamingStrategy());
+
+// Create entity manager
+$entityManager = new EntityManager($connection, $config);
+
+// Configure migrations
+$migrationsConfig = new PhpFile(__DIR__ . '/../doctrine/migrations-config.php');
+$dependencyFactory = DependencyFactory::fromEntityManager(
+    $migrationsConfig,
+    new ExistingEntityManager($entityManager)
+);
+
+// Minimal set of Doctrine commands: migrations:diff, migrations:migrate, migrations:status 
+$application = new Application('Doctrine console');
+$application->addCommands([
+    new DiffCommand($dependencyFactory),
+    new MigrateCommand($dependencyFactory),
+    new StatusCommand($dependencyFactory),
+]);
+
+$application->run();

@@ -1,0 +1,7 @@
+<div class="govuk-body">
+    <h1 class="govuk-heading-l">{{ assessmentRecord.assessment.name }}</h1>
+    <p>Are you sure you want to delete this entry?</p>
+
+    <a class="govuk-button govuk-button--secondary" role="button" href="/mod/assessment/view.php?id={{ courseModule.id }}">Cancel</a>
+    <a class="govuk-button" role="button" href="{{ path('assessment_record_delete', {'id': assessmentRecord.id}) }}?confirm=1">Delete</a>
+</div>

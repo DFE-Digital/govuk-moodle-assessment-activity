@@ -1,0 +1,395 @@
+{#
+This form theme is based on vendor/symfony/symfony/src/Symfony/Bridge/Twig/Resources/views/Form/form_div_layout.html.twig
+Last updated 12/04/2017 to work with Metronic 4.7.5
+#}
+
+{#
+============================== ROWS ==============================
+#}
+
+{# For checkboxes, render slightly differently to the default form_row #}
+{% block checkbox_row_old %}
+	{% set labelSplit = attr|labelSplit %}
+	{% set inputSplit = attr|inputSplit %}
+	{% set displayLabel = attr|displayLabel %}
+	{% set displayLabelInline = attr|displayLabelInline %}
+	
+	<div class="form-group{% if not form.vars.valid %} has-error{% endif %}">
+		{% set labelClass = 'control-label col-md-' ~ labelSplit %}
+		{% if displayLabelInline %}
+			<label class="{{ labelClass }}"></label>
+		{% elseif displayLabel %}
+			{{ form_label(form, null, { label_attr: { class: labelClass }}) }}
+		{% else %}
+			<label class="{{ labelClass }}"></label>
+		{% endif %}
+		<div class="col-md-{{ inputSplit}}">
+			<label class="mt-checkbox mt-checkbox-outline">
+				{# Display the widget, then the errors. This is different to the standard form_row #}
+				{{ form_widget(form) }}
+				<span></span>
+				{% if displayLabelInline %}
+					{{ label|trans({}, translation_domain) }}
+				{% endif %}
+			</label>
+			{{ form_errors(form) }}
+		</div>
+	</div>
+{% endblock checkbox_row_old %}
+
+{% block checkbox_widget %}
+    <input type="checkbox" {{ block('widget_attributes') }}{% if value is defined %} value="{{ value }}"{% endif %}{% if checked %} checked="checked"{% endif %} />
+{% endblock checkbox_widget %}
+
+{# For selects and radios, render slightly differently to the default form_row #}
+{% block choice_row %}
+	{% if expanded %}
+		{% set labelSplit = attr|labelSplit %}
+		{% set inputSplit = attr|inputSplit %}
+		{% set displayLabel = attr|displayLabel %}
+	
+		<div class="form-group{% if not form.vars.valid %} has-error{% endif %}">
+			{% set labelClass = 'control-label col-md-' ~ labelSplit %}
+			{% if displayLabel %}
+				{{ form_label(form, null, { label_attr: { class: labelClass }}) }}
+			{% else %}
+				<label class="{{ labelClass }}"></label>
+			{% endif %}
+			<div class="col-md-{{ inputSplit}}">
+				{# Display the radio widgets within a <div class="radio-list">, then the errors. This is different to the standard form_row #}
+				<div class="radio-list">
+					{{ form_widget(form) }}
+				</div>
+				{{ form_errors(form) }}
+			</div>
+		</div>
+	{% else %}
+		{% set labelSplit = attr|labelSplit %}
+		{% set inputSplit = attr|inputSplit %}
+		{% set displayLabel = attr|displayLabel %}
+	
+		<div class="form-group{% if not form.vars.valid %} has-error{% endif %}">
+			{% set labelClass = 'control-label col-md-' ~ labelSplit %}
+			{% if displayLabel %}
+				{{ form_label(form, null, { label_attr: { class: labelClass }}) }}
+			{% else %}
+				<label class="{{ labelClass }}"></label>
+			{% endif %}
+			<div class="col-md-{{ inputSplit }}">
+				{# Only render <div class="input-icon"> if there are errors. This is different to the default form_row #}
+				{% if not form.vars.valid %}<div class="input-icon">{% endif %}
+					{# Display the errors, then the widget #}
+					{{ form_errors(form) }}
+					{{ form_widget(form) }}
+					{% if attr['help_text'] is defined %}
+						<span class="help-block">{{ attr['help_text'] }}</span>
+					{% endif %}
+				{# Only render <div class="input-icon"> if there are errors. This is different to the default form_row #}
+				{% if not form.vars.valid %}</div>{% endif %}
+			</div>
+		</div>
+	{% endif %}
+{% endblock choice_row %}
+
+{# The default form_row #}
+{% block form_row %}
+	{% import '@govuk-frontend-twig/components/input.html.twig' as govukInput %}
+	{% import '@govuk-frontend-twig/components/checkboxes.html.twig' as govukCheckboxes %}
+	{% import '@govuk-frontend-twig/components/date-input.html.twig' as govukDateInput %}
+	{% import '@govuk-frontend-twig/components/select.html.twig' as govukSelect %}
+	{% import '@govuk-frontend-twig/components/textarea.html.twig' as govukTextarea %}
+    {% if form.vars.block_prefixes|slice(-2, 1)|first == 'textarea' %}
+        {{ govukTextarea.govukTextarea({
+            id: form.vars.id,
+            name: form.vars.full_name,
+            label: { text: form.vars.label },
+            value: form.vars.value,
+            hint: form.vars.help is defined ? { text: form.vars.help } : null,
+            errorMessage: form.vars.errors|length ? { text: form.vars.errors|first.message } : null,
+			disabled: form.vars.disabled,
+        }) }}
+    {% elseif form.vars.block_prefixes|slice(-2, 1)|first == 'choice' %}
+        {{ govukSelect.govukSelect({
+            id: form.vars.id,
+            name: form.vars.full_name,
+            label: { text: form.vars.label },
+            options: form.vars.choices|map(c => {value: c.value, text: c.label}),
+            errorMessage: form.vars.errors|length ? { text: form.vars.errors|first.message } : null,
+			disabled: form.vars.disabled,
+        }) }}
+	{% elseif form.vars.block_prefixes|slice(-2, 1)|first == 'checkbox' %}
+		{{ govukCheckboxes.govukCheckboxes({
+			idPrefix: form.vars.id,
+			name: form.vars.full_name,
+			fieldset: {
+				legend: { text: form.vars.label }
+			},
+			items: [
+				{
+					value: 1,
+					text: form.vars.label,
+					checked: form.vars.checked,
+					disabled: form.vars.disabled,
+				}
+			],
+			errorMessage: form.vars.errors|length ? { text: form.vars.errors|first.message } : null,
+		}) }}
+	{% elseif 'day' in form.vars.data|keys and 'month' in form.vars.data|keys and 'year' in form.vars.data|keys %}
+		{{ govukDateInput.govukDateInput({
+			id: form.vars.id,
+			fieldset: {
+        		legend: { text: form.vars.label }
+		    },
+			items: [
+				{
+					name: form.vars.full_name ~ '[day]',
+					value: form.vars.value.day is defined ? form.vars.value.day : '',
+					classes: 'govuk-input--width-2',
+					label: 'Day',
+				},
+				{
+					name: form.vars.full_name ~ '[month]',
+					value: form.vars.value.month is defined ? form.vars.value.month : '',
+					classes: 'govuk-input--width-2',
+					label: 'Month',
+				},
+				{
+					name: form.vars.full_name ~ '[year]',
+					value: form.vars.value.year is defined ? form.vars.value.year : '',
+					classes: 'govuk-input--width-4',
+					label: 'Year',
+				},
+			],
+			errorMessage: form.vars.errors|length ? { text: form.vars.errors|first.message } : null,
+		}) }}
+	{% elseif form.vars.block_prefixes|slice(-2, 1)|first in ['text', 'csrf_token'] %}
+        {{ govukInput.govukInput({
+            id: form.vars.id,
+            name: form.vars.full_name,
+            label: { text: form.vars.label },
+            value: form.vars.value,
+            hint: form.vars.help is defined ? { text: form.vars.help } : null,
+            errorMessage: form.vars.errors|length ? { text: form.vars.errors|first.message } : null,
+			disabled: form.vars.disabled,
+        }) }}
+    {% else %}
+		Unknown
+		{{ form.vars.block_prefixes|slice(-2, 1)|first}}
+    {% endif %}
+{% endblock %}
+
+{% block form_row_orig %}
+	{% set labelSplit = attr|labelSplit %}
+	{% set inputSplit = attr|inputSplit %}
+	{% set displayLabel = attr|displayLabel %}
+
+	<div class="form-group{% if not form.vars.valid %} has-error{% endif %}">
+		{% set labelClass = 'control-label col-md-' ~ labelSplit %}
+		{% if displayLabel %}
+			{{ form_label(form, null, { label_attr: { class: labelClass }}) }}
+		{% else %}
+			<label class="{{ labelClass }}"></label>
+		{% endif %}
+		<div class="col-md-{{ inputSplit}}">
+			<div class="input-icon right">
+				{# Display the errors, then the widget #}
+				{{ form_errors(form) }}
+				{{ form_widget(form) }}
+				{% if attr['help_text'] is defined %}
+					<span class="help-block">{{ attr['help_text'] }}</span>
+				{% endif %}
+			</div>
+		</div>
+	</div>
+{% endblock form_row_orig %}
+
+{#
+============================== WIDGETS ==============================
+#}
+
+{% block choice_widget %}
+	{# Add the form-control class to the widget #}
+	{% set attr = attr|merge({ class: 'form-control' ~ (attr.class is defined ? ' ' ~ attr.class : '') }) %}
+	{% if expanded %}
+		{{ block('choice_widget_expanded') }}
+	{% else %}
+		{{ block('choice_widget_collapsed') }}
+	{% endif %}
+{% endblock choice_widget %}
+
+{% block choice_widget_expanded %}
+	{# The form-control class has already been added to the widget #}
+	{% for child in form %}
+		{{ form_widget(child) }}
+	{% endfor %}
+{% endblock choice_widget_expanded %}
+
+{% block radio_widget %}
+	<label class="mt-radio mt-radio-outline" for="{{ id }}">
+		<input type="radio" {{ block('widget_attributes') }}{% if value is defined %} value="{{ value }}"{% endif %}{% if checked %} checked="checked"{% endif %} />
+		<span></span>
+		{{ label|trans }}
+	</label>
+{% endblock radio_widget %}
+
+{% block textarea_widget %}
+	{# Add the form-control class to the widget #}
+	{% set attr = attr|merge({ 'class': 'form-control' ~ (attr.class is defined ? ' ' ~ attr.class : '') }) %}
+	<textarea {{ block('widget_attributes') }}>{{ value }}</textarea>
+{% endblock textarea_widget %}
+
+{% block form_widget_simple %}
+	{# Add the form-control class to the widget #}
+	{% if type is not defined or 'file' != type %}	
+		{% set attr = attr|merge({ 'class': 'form-control' ~ (attr.class is defined ? ' ' ~ attr.class : '') }) %}
+	{% endif %}
+	{% set type = type|default('text') %}
+	{% if type == 'date' %}{% set type = 'text' %}{% endif %}
+	{% if type == 'time' %}{% set type = 'text' %}{% endif %}
+	<input type="{{ type }}" {{ block('widget_attributes') }} {% if value is not empty %}value="{{ value }}" {% endif %}/>
+{% endblock form_widget_simple -%}
+
+{# 
+============================== LABELS ==============================
+Removed the required attribute from label_attr and added <span class="required"> when appropriate
+#}
+{% block form_label %}
+	{% if label is not same as (false) %}
+		{% if not compound %}
+			{% set label_attr = label_attr|merge({'for': id}) %}
+		{% endif %}
+		{% if label is empty %}
+			{% set label = name|humanize %}
+		{% endif %}
+		<label{% for attrname, attrvalue in label_attr %} {{ attrname }}="{{ attrvalue }}"{% endfor %}>
+			{{ label|trans({}, translation_domain) }}{% if required %}<span class="required" aria-required="true">*</span>{% endif %}
+		</label>
+		{% endif %}
+{% endblock form_label %}
+
+{#
+============================== ERRORS ==============================
+#}
+
+{# For checkboxes, display the error in a <span> #}		
+{% block checkbox_errors %}
+	{% for error in errors %}
+		<span class="help-block">{{ error.messageTemplate|trans(error.messageParameters, 'validators') }}</span>
+	{% endfor %}
+{% endblock %}
+
+{# For radios, display the error in a <span> #}		
+{% block choice_errors %}
+	{% if expanded %}
+		{% for error in errors %}
+			<span class="help-block">{{ error.messageTemplate|trans(error.messageParameters, 'validators') }}</span>
+		{% endfor %}
+	{% else %}
+		{# For selects, use the default form_errors #}
+		{{ block('form_errors') }}
+	{% endif %}
+{% endblock %}
+
+{# Default form_errors #}
+{% block form_errors %}
+	{% for error in errors %}
+		<i class="fa fa-warning tooltips" data-original-title="{{ error.messageTemplate|trans(error.messageParameters, 'validators') }}" data-container="body"></i>
+		{{ error.messageTemplate|trans(error.messageParameters, 'validators') }}
+	{% endfor %}
+{% endblock form_errors %}
+
+{#
+============================== SWPDP ==============================
+#}
+
+{%- block form_start -%}
+    {%- do form.setMethodRendered() -%}
+    {% set method = method|upper %}
+    {%- if method in ["GET", "POST"] -%}
+        {% set form_method = method %}
+    {%- else -%}
+        {% set form_method = "POST" %}
+    {%- endif -%}
+    <form{% if name != '' %} name="{{ name }}"{% endif %} method="{{ form_method|lower }}"{% if action != '' %} action="{{ action }}"{% endif %}{{ block('attributes') }}{% if multipart %} enctype="multipart/form-data"{% endif %}>
+    {%- if form_method != method -%}
+        <input type="hidden" name="_method" value="{{ method }}" />
+    {%- endif -%}
+{%- endblock form_start -%}
+
+{% block attributes -%}
+    {%- for attrname, attrvalue in attr -%}
+        {{- " " -}}
+        {%- if attrname in ['placeholder', 'title'] -%}
+            {{- attrname }}="{{ translation_domain is same as(false) or attrvalue is null ? attrvalue : attrvalue|trans(attr_translation_parameters, translation_domain) }}"
+        {%- elseif attrvalue is same as(true) -%}
+            {{- attrname }}="{{ attrname }}"
+        {%- elseif attrvalue is not same as(false) -%}
+            {{- attrname }}="{{ attrvalue }}"
+        {%- endif -%}
+    {%- endfor -%}
+{%- endblock attributes -%}
+
+{%- block form_widget -%}
+    {% if compound %}
+        {{- block('form_widget_compound') -}}
+    {% else %}
+        {{- block('form_widget_simple') -}}
+    {% endif %}
+{%- endblock form_widget -%}
+
+{%- block widget_attributes -%}
+    id="{{ id }}" name="{{ full_name }}"
+    {%- if disabled %} disabled="disabled"{% endif -%}
+    {%- if required %} required="required"{% endif -%}
+    {{ block('attributes') }}
+{%- endblock widget_attributes -%}
+
+{%- block form_widget_compound -%}
+    <div {{ block('widget_container_attributes') }}>
+        {%- if form is rootform -%}
+            {{ form_errors(form) }}
+        {%- endif -%}
+        {{- block('form_rows') -}}
+        {{- form_rest(form) -}}
+    </div>
+{%- endblock form_widget_compound -%}
+
+{%- block widget_container_attributes -%}
+    {%- if id is not empty %}id="{{ id }}"{% endif -%}
+    {{ block('attributes') }}
+{%- endblock widget_container_attributes -%}
+
+{%- block form_rows -%}
+    {% for child in form|filter(child => not child.rendered) %}
+        {{- form_row(child) -}}
+    {% endfor %}
+{%- endblock form_rows -%}
+
+{%- block form_rest -%}
+    {% for child in form -%}
+        {% if not child.rendered %}
+            {{- form_row(child) -}}
+        {% endif %}
+    {%- endfor -%}
+
+    {% if not form.methodRendered and form is rootform %}
+        {%- do form.setMethodRendered() -%}
+        {% set method = method|upper %}
+        {%- if method in ["GET", "POST"] -%}
+            {% set form_method = method %}
+        {%- else -%}
+            {% set form_method = "POST" %}
+        {%- endif -%}
+
+        {%- if form_method != method -%}
+            <input type="hidden" name="_method" value="{{ method }}" />
+        {%- endif -%}
+    {% endif -%}
+{% endblock form_rest %}
+
+{%- block form_end -%}
+    {%- if not render_rest is defined or render_rest -%}
+        {{ form_rest(form) }}
+    {%- endif -%}
+    </form>
+{%- endblock form_end -%}

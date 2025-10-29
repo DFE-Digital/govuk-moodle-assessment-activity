@@ -1,0 +1,76 @@
+<h2>
+  {% if assessmentTypeSection.id %}
+    Edit section - {{ assessmentTypeSection.name }}
+  {% else %}
+    {{ assessmentTypeSection.assessmentType.name }}: Add section
+  {% endif %}
+</h2>
+
+{% for type, messages in flash_messages %}
+    {% for message in messages %}
+        <div class="alert alert-{{ type }}">
+            {{ message }}
+        </div>
+    {% endfor %}
+{% endfor %}
+
+{{ form_start(form) }}
+  {{ form_row(form.name) }}
+  {{ form_row(form.guidance_before) }}
+  {{ form_row(form.guidance_after) }}
+
+  {% if assessmentTypeSection.id %}
+    <h3>Items</h3>
+
+    <a href="{{ path('assessment_type_item_new', {'assessmentTypeSectionId': assessmentTypeSection.id}) }}?type=field">Add field</a>
+
+    <div id="assessment-type-items">
+        <table class="generaltable">
+          <thead>
+            <tr>
+              <td>Name</td>
+              <td>Type</td>
+              <td>Description</td>
+              <td>&nbsp;</td>
+            </tr>
+          </thead>
+          <tbody>
+            {% for assessmentTypeItem in assessmentTypeSection.assessmentTypeItems %}
+              <tr>
+                <td>
+                  {{ assessmentTypeItem.name }}
+                </td>
+                <td>
+                  {% if assessmentTypeItem|classShort == 'AssessmentTypeField' %}
+                    {{ assessmentTypeItem.dataType }}
+                  {% else %}
+                    {{ assessmentTypeItem|classShort }}
+                  {% endif %}
+                </td>
+                <td>
+                  {{ assessmentTypeItem.description }}
+                </td>
+                <td>
+                  <a href="{{ path('assessment_type_item_edit', {'id': assessmentTypeItem.id}) }}">
+                    Edit
+                  </a>
+                </td>
+              </tr>
+            {% else %}
+              <tr>
+                <td colspan="3">No items</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+    </div>
+  {% endif %}
+
+  <div style="display:none;">
+    {{ form_rest(form) }}
+  </div>
+
+  <button type="submit" class="btn btn-primary">
+    Save
+  </button>
+{{ form_end(form) }}

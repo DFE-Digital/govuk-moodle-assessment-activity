@@ -1,0 +1,212 @@
+{% macro render_guidance(html) %}
+    {# Replace tags with classed versions, then mark as safe #}
+    {% set html = html
+        |replace({
+            '<h2>': '<h2 class="govuk-heading-m">',
+            '<p>': '<p class="govuk-body">'
+        })
+    %}
+    {{ html|raw }}
+{% endmacro %}
+{% import _self as macros %}
+
+{# Get a handle on AssessmentRecord > Assessment > AssessmentType #}
+{% set assessment = assessmentRecord.assessment %}
+{% set assessmentType = assessment.assessmentType %}
+
+<div class="govuk-body">
+  {{ form_start(form) }}
+    <h1 class="govuk-heading-l">{{ assessment.name }}</h1>
+
+    {% if assessmentType.guidanceBefore %}
+      {{ macros.render_guidance(assessmentType.guidanceBefore) }}
+    {% endif %}
+
+    <div class="govuk-accordion" data-module="govuk-accordion" id="accordion-default">
+      {# Iterate the AssessmentType's AssessmentTypeSections #}
+      {% for index, assessmentTypeSection in assessmentRecord.assessment.assessmentType.assessmentTypeSections %}
+        {% set id = index + 1 %}
+        <div class="govuk-accordion__section">
+          <div class="govuk-accordion__section-header">
+            <h2 class="govuk-accordion__section-heading">
+              <span class="govuk-accordion__section-button" id="accordion-default-heading-{{ id }}">
+                Section {{ id }}: {{ assessmentTypeSection.name }} 
+              </span>
+            </h2>
+          </div>
+
+          <div id="accordion-default-content-{{ id }}" class="govuk-accordion__section-content">
+            {% if assessmentTypeSection.guidanceBefore %}
+              {{ macros.render_guidance(assessmentTypeSection.guidanceBefore) }}
+            {% endif %}
+
+            {# Iterate the AssessmentTypeSection's AssessmentTypeItems #}
+            {% for assessmentTypeItem in assessmentTypeSection.assessmentTypeItems %}
+              {# Within the AssessmentRecord form, locate the AssessmentRecordItem subform that matches the AssessmentTypeItem #}
+              {% set assessmentRecordItemFormForAssessmentTypeItem = null %}
+              {% for assessmentRecordItemForm in form.assessmentRecordItems %}
+                {% if assessmentRecordItemForm.vars.data.assessmentTypeItemId == assessmentTypeItem.id %}
+                  {% set assessmentRecordItemFormForAssessmentTypeItem = assessmentRecordItemForm %}
+                {% endif %}
+              {% endfor %}
+
+              {% if 0 and assessmentRecordItemFormForAssessmentTypeItem %}
+                {{ form_row(assessmentRecordItemFormForAssessmentTypeItem.value) }}
+              {% else %}
+                {# Render AssessmentTypeFields (a subclass of AssessmentTypeItem) #}
+                {% if assessmentTypeItem|classShort == 'AssessmentTypeField' %}
+                  {% if assessmentTypeItem.dataType == 'static' %}
+                    <div>
+                      <label class="govuk-label govuk-label--m">{{ assessmentTypeItem.description }}</label>
+
+                      {% if assessmentTypeItem.guidanceBefore %}
+                        <div class="govuk-hint">
+                          {# HTML containing <p> does not need to be rendered as <p class="govuk-body">: do not use render_guidance #}
+                          {{ assessmentTypeItem.guidanceBefore|raw }}
+                        </div>
+                      {% endif %}
+                    </div>
+                  {% elseif assessmentTypeItem.dataType == 'text' %}
+                    <div class="mb-3 pt-3">
+                      <label class="govuk-label govuk-label--m">{{ assessmentTypeItem.description }}</label>
+
+                      {% if assessmentTypeItem.guidanceBefore %}
+                        <div class="govuk-hint">
+                          {# HTML containing <p> does not need to be rendered as <p class="govuk-body">: do not use render_guidance #}
+                          {{ assessmentTypeItem.guidanceBefore|raw }}
+                        </div>
+                      {% endif %}
+
+                      <div title="{{ assessmentTypeItem.description }}">
+                        {# For layout reasons, the <input> field cannot have whitespace before it #}
+                        <label for="field_{{ assessmentTypeItem.id }}"><span class="accesshide">{{ assessmentTypeItem.description }}</span></label><input
+                          class="basefieldinput form-control d-inline mod-data-input"
+                          type="text"
+                          namexxx="field_{{ assessmentTypeItem.id }}"
+                          name="{{ assessmentRecordItemFormForAssessmentTypeItem.value.vars.full_name }}"
+                          id="field_{{ assessmentTypeItem.id }}"
+                          value="{{ assessmentRecordItemFormForAssessmentTypeItem.value.vars.data }}"
+                          {% if assessmentRecordItemFormForAssessmentTypeItem.value.vars.disabled %}disabled{% endif %}
+                        >
+                      </div>
+
+                      {# POC: Rendering errors - for text/date fields #}
+                      {% if not assessmentRecordItemFormForAssessmentTypeItem.value.vars.valid %}
+                        {% for error in assessmentRecordItemFormForAssessmentTypeItem.value.vars.errors %}
+                          <span style="color:#f00;">{{ error.message }}</span>
+                        {% endfor %}
+                      {% endif %}
+                    </div>
+                    {% do assessmentRecordItemFormForAssessmentTypeItem.setRendered %}
+                  {% elseif assessmentTypeItem.dataType == 'textarea' %}
+                    <div class="mb-3 pt-3">
+                      <label class="govuk-label govuk-label--m">{{ assessmentTypeItem.description }}</label>
+                      {% if assessmentTypeItem.guidanceBefore %}
+                        <div class="govuk-hint">
+                          {# HTML containing <p> does not need to be rendered as <p class="govuk-body">: do not use render_guidance #}
+                          {{ assessmentTypeItem.guidanceBefore|raw }}
+                        </div>
+                      {% endif %}
+                      <div title="{{ assessmentTypeItem.guidanceBefore }}" class="d-inline-flex">
+                        <label for="field_{{ assessmentTypeItem.id }}">
+                          <span class="accesshide">{{ assessmentTypeItem.description }}</span>
+                        </label>
+                        <input type="hidden" name="field_{{ assessmentTypeItem.id }}_itemid" value="104322056">
+                        <div class="mod-data-input">
+                          <div>
+                            <textarea
+                              id="field_{{ assessmentTypeItem.id }}"
+                              namexxx="field_{{ assessmentTypeItem.id }}"
+                              name="{{ assessmentRecordItemFormForAssessmentTypeItem.value.vars.full_name }}"
+                              rows="10"
+                              class="form-control"
+                              data-fieldtype="editor"
+                              cols="80"
+                              spellcheck="true"
+                              {% if assessmentRecordItemFormForAssessmentTypeItem.value.vars.disabled %}disabled{% endif %}
+                            >{{ assessmentRecordItemFormForAssessmentTypeItem.value.vars.data }}</textarea>
+                          </div>
+                          <div>
+                            <label class="accesshide" for="field_{{ assessmentTypeItem.id }}_content1">Format</label>
+                            <select id="field_{{ assessmentTypeItem.id }}_content1" name="field_{{ assessmentTypeItem.id }}_content1">
+                              <option value="1" selected="selected">HTML format</option>
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    {% do assessmentRecordItemFormForAssessmentTypeItem.setRendered %}
+                  {% elseif assessmentTypeItem.dataType == 'checkbox' %}
+                    <div class="cb-fix-2">
+                      <div title="{{ assessmentTypeItem.name }}">
+                        <fieldset>
+                          <legend><span class="accesshide">{{ assessmentTypeItem.name }}</span></legend>
+                          <input
+                            type="checkbox"
+                            id="{{ assessmentRecordItemFormForAssessmentTypeItem.value.vars.full_name }}"
+                            name="{{ assessmentRecordItemFormForAssessmentTypeItem.value.vars.full_name }}"
+                            class="mod-data-input me-1"
+                            {% if assessmentRecordItemFormForAssessmentTypeItem.value.vars.data == true %}checked{% endif %}
+                            {% if assessmentRecordItemFormForAssessmentTypeItem.value.vars.disabled %}disabled{% endif %}
+                          >
+                          <label for="{{ assessmentRecordItemFormForAssessmentTypeItem.value.vars.full_name }}">
+                            {{ assessmentTypeItem.description }}
+                          </label>
+                          <br>
+                        </fieldset>
+                      </div>
+                    </div>
+                    {% do assessmentRecordItemFormForAssessmentTypeItem.setRendered %}
+                  {% elseif assessmentTypeItem.dataType == 'date' %}
+                    {# JUST USE THE TEXT FIELD FOR NOW, TO GET ALL DATA IN #}
+                    <div class="mb-3 pt-3">
+                      <label class="govuk-label govuk-label--m">{{ assessmentTypeItem.description }}</label>
+
+                      {% if assessmentTypeItem.guidanceBefore %}
+                        <div class="govuk-hint">
+                          {# HTML containing <p> does not need to be rendered as <p class="govuk-body">: do not use render_guidance #}
+                          {{ assessmentTypeItem.guidanceBefore|raw }}
+                        </div>
+                      {% endif %}
+
+                      <div title="{{ assessmentTypeItem.description }}">
+                        {# For layout reasons, the <input> field cannot have whitespace before it #}
+                        <label for="field_{{ assessmentTypeItem.id }}"><span class="accesshide">{{ assessmentTypeItem.description }}</span></label><input
+                          class="basefieldinput form-control d-inline mod-data-input"
+                          type="text"
+                          namexxx="field_{{ assessmentTypeItem.id }}"
+                          name="{{ assessmentRecordItemFormForAssessmentTypeItem.value.vars.full_name }}"
+                          id="field_{{ assessmentTypeItem.id }}"
+                          value="{{ assessmentRecordItemFormForAssessmentTypeItem.value.vars.data }}"
+                          {% if assessmentRecordItemFormForAssessmentTypeItem.value.vars.disabled %}disabled{% endif %}
+                        >
+                      </div>
+
+                      {# POC: Rendering errors - for text/date fields #}
+                      {% if not assessmentRecordItemFormForAssessmentTypeItem.value.vars.valid %}
+                        {% for error in assessmentRecordItemFormForAssessmentTypeItem.value.vars.errors %}
+                          <span style="color:#f00;">{{ error.message }}</span>
+                        {% endfor %}
+                      {% endif %}
+                    </div>
+                    {% do assessmentRecordItemFormForAssessmentTypeItem.setRendered %}
+                    {# END: JUST USE THE TEXT FIELD FOR NOW, TO GET ALL DATA IN #}
+                  {% else %}
+                    Field : {{ assessmentTypeItem.dataType }}
+                  {% endif %}
+                {% endif %}
+              {% endif %}
+            {% endfor %}
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+
+    <div id="sticky-footer" class="justify-content-end" data-disable="true">
+      <button type="submit" name="action" value="save" class="govuk-button">Save progress</button>
+      <button type="submit" name="action" value="review" class="govuk-button">WIP: Review</button>
+      <a class="govuk-button govuk-button--secondary" role="button" onclick="return false;" href="">Send to observer</a>
+    </div>
+    {{ form_rest(form) }}
+  {{ form_end(form) }}  
+</div>

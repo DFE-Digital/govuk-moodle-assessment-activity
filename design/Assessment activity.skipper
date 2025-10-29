@@ -1,0 +1,203 @@
+<?xml version="1.0"?>
+<skipper version="3.3.7.1828" mvc="Symfony" orm="Doctrine2" name="Assessment activity" uuid="40ad3dfb-8b19-4d48-bbf4-36ab7bd394cd">
+  <module name="\AppBundle" local-name="AppBundle" namespace="\mod_assessment\Entity" local-namespace="mod_assessment\Entity" export-format="Doctrine2Xml" export-path="../doctrine" uuid="a1ca636c-87e7-4cba-a356-63cde1c12f8a">
+    <entity name="\mod_assessment\Entity\AssessmentType" local-name="AssessmentType" namespace="\mod_assessment\Entity" uuid="6c4efae2-4412-41b0-9a2a-52e87c42ebc5">
+      <field name="id" type="integer" required="true" unique="true" primary="true" auto-increment="true" uuid="b69e2de1-126d-41fe-a904-b8d6d4619277">
+        <orm-attributes>
+          <attribute name="generator">
+            <attribute name="strategy">IDENTITY</attribute>
+          </attribute>
+        </orm-attributes>
+      </field>
+      <field name="name" type="string" size="255" required="true" uuid="7463be98-3932-4610-a662-cdffc4a65776"/>
+      <field name="guidanceBefore" type="text" uuid="1a067467-b54c-41e1-8eed-84d0730edbc1"/>
+      <field name="guidanceAfter" type="text" uuid="fe0c4d69-f3f5-47d3-a925-29092be9302d"/>
+      <orm-attributes>
+        <attribute name="table">mdl_assessment_type</attribute>
+      </orm-attributes>
+    </entity>
+    <entity name="\mod_assessment\Entity\AssessmentTypeSection" local-name="AssessmentTypeSection" namespace="\mod_assessment\Entity" uuid="937f49a6-bf11-496f-8d8e-19d93a382050">
+      <field name="id" type="integer" required="true" unique="true" primary="true" auto-increment="true" uuid="30b36900-43b0-457e-acf5-013409cfde7a">
+        <orm-attributes>
+          <attribute name="generator">
+            <attribute name="strategy">IDENTITY</attribute>
+          </attribute>
+        </orm-attributes>
+      </field>
+      <field name="assessment_type_id" type="integer" required="true" uuid="b3cf6c0b-09b3-4d3d-b11b-b46b8922e506"/>
+      <field name="name" type="string" size="255" required="true" uuid="8042da1e-a67b-4eb1-bce9-3a9ccc26a6a3"/>
+      <field name="guidanceBefore" type="text" uuid="6299fc6e-afd3-43c9-a6f3-71a9d19f86bb"/>
+      <field name="guidanceAfter" type="text" uuid="698b70ec-82bc-4a8f-85b6-e7ee587f4afe"/>
+      <field name="parent_assessment_type_section_id" type="integer" uuid="bc263f07-1776-4c6b-9d5b-14eb028947fc"/>
+      <field name="displayOrder" type="integer" uuid="3f4d8d7e-24e4-43f2-b19b-5a9ab803929b"/>
+      <orm-attributes>
+        <attribute name="table">mdl_assessment_type_section</attribute>
+      </orm-attributes>
+    </entity>
+    <association from="\mod_assessment\Entity\AssessmentTypeSection" to="\mod_assessment\Entity\AssessmentType" caption="AssessmentType AssessmentTypeSections" owner-alias="assessmentTypeSections" inverse-alias="assessmentType" many-owner="true" many-inverse="false" parent-required="true" uuid="37a8889e-e908-47bd-b875-08ae27da5789">
+      <association-field from="assessment_type_id" to="id" uuid="9c183c57-d11c-40ec-bd20-ebd9b00a7368"/>
+      <orm-attributes>
+        <attribute name="side-inverse">
+          <attribute name="cascade">
+            <attribute name="cascade-persist">true</attribute>
+            <attribute name="cascade-remove">true</attribute>
+          </attribute>
+          <attribute name="order-by">
+            <attribute name="order-by-field">
+              <attribute name="direction">ASC</attribute>
+              <attribute name="field">displayOrder</attribute>
+            </attribute>
+          </attribute>
+          <attribute name="orphan-removal">true</attribute>
+        </attribute>
+      </orm-attributes>
+    </association>
+    <association from="\mod_assessment\Entity\AssessmentTypeSection" to="\mod_assessment\Entity\AssessmentTypeSection" owner-alias="childAssessmentTypeSections" inverse-alias="parentAssessmentTypeSection" many-owner="true" many-inverse="false" uuid="d30ec191-2d5a-437f-8b03-ca38ee65fe3c">
+      <association-field from="parent_assessment_type_section_id" to="id" uuid="4a607540-bbe2-4c4a-9153-3f9b53d11187"/>
+    </association>
+    <entity name="\mod_assessment\Entity\AssessmentTypeItem" local-name="AssessmentTypeItem" namespace="\mod_assessment\Entity" uuid="e54b49cc-06b2-4900-bdc9-f4b91834eb40">
+      <field name="id" type="integer" required="true" unique="true" primary="true" auto-increment="true" uuid="c0b882fc-1882-46ec-ba7f-92c55363390d">
+        <orm-attributes>
+          <attribute name="generator">
+            <attribute name="strategy">IDENTITY</attribute>
+          </attribute>
+        </orm-attributes>
+      </field>
+      <field name="assessment_type_section_id" type="integer" required="true" uuid="ec64543c-b314-4848-8fd2-73bdff2b6112"/>
+      <field name="type" type="string" size="255" required="true" uuid="3bd13a1f-a4d8-452a-a284-55d193bb38ec"/>
+      <field name="name" type="string" size="255" required="true" uuid="540ee85f-0b15-4b2e-8bb4-7db148db859a"/>
+      <field name="description" type="string" size="1000" uuid="b7bd3fa0-ceac-46da-a2d2-9dcd81531f55"/>
+      <field name="guidanceBefore" type="text" uuid="585023e1-3658-49da-9e10-c429c30a52db"/>
+      <field name="guidanceAfter" type="text" uuid="265c57df-fa5d-43b1-a40d-0cbac77c1339"/>
+      <field name="displayOrder" type="integer" uuid="b437ff88-8cdb-4984-988c-715726368292"/>
+      <inheritance-parent discriminator-field="type" type="SINGLE_TABLE" discriminator-value-base="item" uuid="8a40c366-be56-4eaf-bf95-6d6443bfddc1"/>
+      <orm-attributes>
+        <attribute name="table">mdl_assessment_type_item</attribute>
+      </orm-attributes>
+    </entity>
+    <association from="\mod_assessment\Entity\AssessmentTypeItem" to="\mod_assessment\Entity\AssessmentTypeSection" caption="AssessmentTypeSection AssessmentTypeItems" owner-alias="assessmentTypeItems" inverse-alias="assessmentTypeSection" many-owner="true" many-inverse="false" parent-required="true" uuid="2da9a56e-73ba-4603-86c1-39c15438a0a0">
+      <association-field from="assessment_type_section_id" to="id" uuid="ec2b6951-bf62-4b87-9618-0c9557437ac6"/>
+      <orm-attributes>
+        <attribute name="side-inverse">
+          <attribute name="cascade">
+            <attribute name="cascade-persist">true</attribute>
+            <attribute name="cascade-remove">true</attribute>
+          </attribute>
+          <attribute name="order-by">
+            <attribute name="order-by-field">
+              <attribute name="direction">ASC</attribute>
+              <attribute name="field">displayOrder</attribute>
+            </attribute>
+          </attribute>
+          <attribute name="orphan-removal">true</attribute>
+        </attribute>
+      </orm-attributes>
+    </association>
+    <entity name="\mod_assessment\Entity\AssessmentTypeField" local-name="AssessmentTypeField" namespace="\mod_assessment\Entity" uuid="52ecac73-19cb-4c56-bb01-0c0d5c3dbb13">
+      <field name="dataType" type="string" size="255" required="true" uuid="2892366f-8c2a-499f-abf0-e472f9e8fe74"/>
+      <field name="isRequired" type="boolean" required="true" uuid="a9d90c6c-0b47-4e61-90c3-2e053242d9ae"/>
+      <inheritance-child derived-from="\mod_assessment\Entity\AssessmentTypeItem" discriminator-value="field" caption="New inheritance" uuid="0164fd36-00c1-4ab3-bbe6-fa340b97fa45"/>
+    </entity>
+    <entity name="\mod_assessment\Entity\AssessmentTypeObjective" local-name="AssessmentTypeObjective" namespace="\mod_assessment\Entity" uuid="bb22741b-3112-4d55-9410-10061721e1e5">
+      <inheritance-child derived-from="\mod_assessment\Entity\AssessmentTypeItem" discriminator-value="objective" caption="New inheritance" uuid="b92f2353-b1f5-425a-ac63-8c5bcbc0f6c4"/>
+    </entity>
+    <entity name="\mod_assessment\Entity\Assessment" local-name="Assessment" namespace="\mod_assessment\Entity" uuid="da08c492-32b6-4dd8-b1b7-5c69ecfe53b2">
+      <field name="id" type="integer" required="true" unique="true" primary="true" auto-increment="true" uuid="2b4cadd2-40d0-470f-a5c5-75642797c453">
+        <orm-attributes>
+          <attribute name="generator">
+            <attribute name="strategy">IDENTITY</attribute>
+          </attribute>
+        </orm-attributes>
+      </field>
+      <field name="course" description="Standard Moodle column name for plugins: BIGINT NOT NULL DEFAULT 0" type="bigint" default="0" required="true" uuid="b014056e-a29d-4002-be31-da5322ecfaaa"/>
+      <field name="assessment_type_id" type="integer" required="true" uuid="d61d2833-827a-4dd8-b1e3-792a64486aad"/>
+      <field name="name" type="string" size="255" uuid="9c9a7058-c665-4576-b4e4-6bd114f11a1c"/>
+      <field name="createdAt" type="datetime" uuid="31873392-a6fc-4dd5-b51e-63a2d605ee05"/>
+      <field name="updatedAt" type="datetime" uuid="857b4903-a8b2-4bb9-9343-e6deee893d6f"/>
+      <field name="timecreated" description="Standard Moodle timestamping: BIGINT NOT NULL DEFAULT 0" type="bigint" default="0" required="true" uuid="d9514988-0cb2-482d-8101-2869ca20fac0"/>
+      <field name="timemodified" description="Standard Moodle timestamping: BIGINT NOT NULL DEFAULT 0" type="bigint" default="0" required="true" uuid="05480092-c9b3-4d3b-9847-0b3817e694a9"/>
+      <field name="intro" description="Standard Moodle plugin column: TEXT NULL DEFAULT NULL" type="text" uuid="a84fff2c-7d19-471a-953a-e5c24896285f"/>
+      <field name="introformat" description="Standard Moodle plugin column: SMALLINT NOT NULL DEFAULT 0" type="smallint" default="0" required="true" uuid="fa992a23-86e9-49e5-a498-aa68a3486619"/>
+      <orm-attributes>
+        <attribute name="table">mdl_assessment</attribute>
+      </orm-attributes>
+    </entity>
+    <association from="\mod_assessment\Entity\Assessment" to="\mod_assessment\Entity\AssessmentType" caption="AssessmentType Assessments" inverse-alias="assessmentType" many-owner="true" many-inverse="false" parent-required="true" uuid="81cd1a51-46e7-4ec0-b18f-9604708cfb6a">
+      <association-field from="assessment_type_id" to="id" uuid="002d97c6-e142-4487-9d2f-7f3497b91a4b"/>
+    </association>
+    <entity name="\mod_assessment\Entity\AssessmentRecordItem" local-name="AssessmentRecordItem" namespace="\mod_assessment\Entity" uuid="3c959f41-3244-434c-a2f5-7ed6d64667da">
+      <field name="id" type="integer" required="true" unique="true" primary="true" auto-increment="true" uuid="d28b79b8-b496-4d92-8612-25b851f72ca3">
+        <orm-attributes>
+          <attribute name="generator">
+            <attribute name="strategy">IDENTITY</attribute>
+          </attribute>
+        </orm-attributes>
+      </field>
+      <field name="assessment_record_id" type="integer" required="true" uuid="b4481161-ea89-48d4-bed3-e37b29823d95"/>
+      <field name="assessment_type_item_id" type="integer" required="true" uuid="12f10ca7-58d8-413c-ace3-dd7b1f677aa1"/>
+      <field name="value" type="json" uuid="bed8dfa1-7e66-444a-b87f-059458a4061f"/>
+      <orm-attributes>
+        <attribute name="table">mdl_assessment_record_item</attribute>
+      </orm-attributes>
+    </entity>
+    <association from="\mod_assessment\Entity\AssessmentRecordItem" to="\mod_assessment\Entity\AssessmentTypeItem" caption="AssessmentTypeItem AsssessmentRecordItems" inverse-alias="assessmentTypeItem" many-owner="true" many-inverse="false" parent-required="true" uuid="2ff9b8a2-c12a-4a0f-b479-279021ca37ea">
+      <association-field from="assessment_type_item_id" to="id" uuid="55bf13cf-d3a8-4b71-a923-0cb034abed98"/>
+    </association>
+    <association from="\mod_assessment\Entity\AssessmentRecordItem" to="\mod_assessment\Entity\AssessmentRecord" caption="AssessmentRecord AssessmentRecordItems" owner-alias="assessmentRecordItems" inverse-alias="assessmentRecord" many-owner="true" many-inverse="false" parent-required="true" uuid="9c1e9d74-ed62-43ad-a702-41e7ad730f55">
+      <association-field from="assessment_record_id" to="id" uuid="b09b7d34-80e3-456d-9d87-f3c11309a871"/>
+      <orm-attributes>
+        <attribute name="side-inverse">
+          <attribute name="cascade">
+            <attribute name="cascade-persist">true</attribute>
+            <attribute name="cascade-remove">true</attribute>
+          </attribute>
+          <attribute name="orphan-removal">true</attribute>
+        </attribute>
+      </orm-attributes>
+    </association>
+    <entity name="\mod_assessment\Entity\AssessmentRecord" local-name="AssessmentRecord" namespace="\mod_assessment\Entity" uuid="47f47f14-73df-4a9b-9531-a9426fe5fdbc">
+      <field name="id" type="integer" required="true" unique="true" primary="true" auto-increment="true" uuid="63628227-aee0-4e72-ac9b-8fd6b22eabdd">
+        <orm-attributes>
+          <attribute name="generator">
+            <attribute name="strategy">IDENTITY</attribute>
+          </attribute>
+        </orm-attributes>
+      </field>
+      <field name="assessment_id" type="integer" required="true" uuid="16ce4fc1-88a9-47d2-ba4e-6f16807c5e8c"/>
+      <field name="userId" description="BIGINT to match mdl_user &gt; id" type="bigint" required="true" uuid="c480abba-62b0-40b4-96f9-66eedfc0193c"/>
+      <field name="createdAt" type="datetime" uuid="3bea7c11-7520-4dac-a763-c96974a95296"/>
+      <orm-attributes>
+        <attribute name="table">mdl_assessment_record</attribute>
+      </orm-attributes>
+    </entity>
+    <association from="\mod_assessment\Entity\AssessmentRecord" to="\mod_assessment\Entity\Assessment" caption="Assessment AssessmentRecords" owner-alias="assessmentRecords" inverse-alias="assessment" many-owner="true" many-inverse="false" parent-required="true" uuid="3b8a61e7-99ad-47c9-b48e-cbc6cbad72fc">
+      <association-field from="assessment_id" to="id" uuid="64a2c397-7a04-4c96-86cb-32b41f0d0d46"/>
+    </association>
+    <orm-attributes>
+      <attribute name="db-naming-strategy">underscore-lower</attribute>
+      <attribute name="file-suffix">.dcm</attribute>
+      <attribute name="filename-format">with-namespace</attribute>
+    </orm-attributes>
+  </module>
+  <visual-data>
+    <association uuid="2da9a56e-73ba-4603-86c1-39c15438a0a0" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0" color="#969696"/>
+    <association uuid="2ff9b8a2-c12a-4a0f-b479-279021ca37ea" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0" color="#969696"/>
+    <association uuid="37a8889e-e908-47bd-b875-08ae27da5789" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0" color="#969696"/>
+    <association uuid="3b8a61e7-99ad-47c9-b48e-cbc6cbad72fc" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0" color="#969696"/>
+    <association uuid="81cd1a51-46e7-4ec0-b18f-9604708cfb6a" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0" color="#969696"/>
+    <association uuid="9c1e9d74-ed62-43ad-a702-41e7ad730f55" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0" color="#969696"/>
+    <association uuid="d30ec191-2d5a-437f-8b03-ca38ee65fe3c" caption1-position-x="44" caption1-position-y="2" center-position-x="0" center-position-y="-20" color="#969696"/>
+    <entity uuid="3c959f41-3244-434c-a2f5-7ed6d64667da" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="544" position-y="170" size-x="0" size-x2="172" size-y="0" size-y2="73"/>
+    <entity uuid="47f47f14-73df-4a9b-9531-a9426fe5fdbc" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="567" position-y="40" size-x="0" size-x2="125" size-y="0" size-y2="59"/>
+    <entity uuid="52ecac73-19cb-4c56-bb01-0c0d5c3dbb13" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="18" position-y="412" size-x="0" size-x2="184" size-y="0" size-y2="158"/>
+    <entity uuid="6c4efae2-4412-41b0-9a2a-52e87c42ebc5" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="134" position-y="10" size-x="0" size-x2="115" size-y="0" size-y2="73"/>
+    <entity uuid="937f49a6-bf11-496f-8d8e-19d93a382050" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="89" position-y="110" size-x="0" size-x2="215" size-y="0" size-y2="87"/>
+    <entity uuid="bb22741b-3112-4d55-9410-10061721e1e5" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="220" position-y="412" size-x="0" size-x2="184" size-y="0" size-y2="129"/>
+    <entity uuid="da08c492-32b6-4dd8-b1b7-5c69ecfe53b2" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="334" position-y="27" size-x="0" size-x2="149" size-y="0" size-y2="101"/>
+    <entity uuid="e54b49cc-06b2-4900-bdc9-f4b91834eb40" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="115" position-y="258" size-x="0" size-x2="184" size-y="0" size-y2="129"/>
+    <inheritance-child uuid="0164fd36-00c1-4ab3-bbe6-fa340b97fa45" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0" color="#969696"/>
+    <inheritance-child uuid="b92f2353-b1f5-425a-ac63-8c5bcbc0f6c4" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0" color="#969696"/>
+    <module uuid="a1ca636c-87e7-4cba-a356-63cde1c12f8a" bg-color="#FEFCE8" position-x="61" position-y="72" size-x="11" size-x2="752" size-y="22" size-y2="593"/>
+    <project uuid="40ad3dfb-8b19-4d48-bbf4-36ab7bd394cd" size-x="0" size-x2="1114" size-y="0" size-y2="734"/>
+  </visual-data>
+</skipper>

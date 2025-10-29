@@ -1,0 +1,26 @@
+mod_assessment\Dto\AssessmentRecordDto:
+    constraints:
+        - \mod_assessment\Validator\ValidAssessmentRecordDto: ~    
+
+mod_assessment\Entity\AssessmentType:
+    properties:
+        name:
+            - NotBlank: ~
+        assessmentTypeSections:
+            - Valid: ~
+
+mod_assessment\Entity\AssessmentTypeSection:
+    properties:
+        assessmentType:
+            - NotNull: ~
+        name:
+            - NotBlank: ~
+        assessmentTypeItems:
+            - Valid: ~
+
+mod_assessment\Entity\AssessmentTypeItem:
+    properties:
+        assessmentTypeSection:
+            - NotNull: ~
+        name:
+            - NotBlank: ~
