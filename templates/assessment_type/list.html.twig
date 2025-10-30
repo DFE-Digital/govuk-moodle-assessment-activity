@@ -1,30 +1,26 @@
-<h2>Assessment types</h2>
-
-<div class="py-3">Here is the list of assessment types...</div>
+{% import '@govuk-frontend-twig/components/table.html.twig' as govukTable %}
 
 <a href="{{ path('assessment_type_new') }}">Create assessment type</a>
 
-<table class="generaltable">
-  <thead>
-    <tr>
-      <th>Asessement type</th>
-      <th>&nbsp;</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for assessmentType in assessmentTypes %}
-      <tr>
-        <td>
-          {{ assessmentType.name }}
-        </td>
-        <td>
-          <a href="{{ path('assessment_type_edit', {'id': assessmentType.id}) }}">Edit</a>
-        </td>
-      </tr>
-    {% else %}
-      <tr>
-        <td colspan="2">No assessment types</td>
-      </tr>
-    {% endfor %}
-  </tbody>
-</table>
+{%
+set head = [
+  { text: 'Assessment type' },
+  { text: '' },
+]
+%}
+
+{% set rows = [] %}
+{% for assessmentType in assessmentTypes %}
+  {% set rows = rows|merge([[
+    { text: assessmentType.name },
+    { html: '<a href="' ~ path('assessment_type_edit', {'id': assessmentType.id}) ~ '">Edit</a>' },
+  ]]) %}
+{% endfor %}
+
+{{ govukTable.govukTable({
+  caption: "Assessment types",
+  captionClasses: "govuk-table__caption--m",
+  firstCellIsHeader: true,
+  head: head,
+  rows: rows
+}) }}
