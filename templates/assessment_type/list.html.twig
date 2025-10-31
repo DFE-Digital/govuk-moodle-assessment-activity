@@ -1,26 +1,28 @@
 {% import '@govuk-frontend-twig/components/table.html.twig' as govukTable %}
 
-<a href="{{ path('assessment_type_new') }}">Create assessment type</a>
+<div class="gds-container">
+  <p><a href="{{ path('assessment_type_new') }}">Create assessment type</a></p>
 
-{%
-set head = [
-  { text: 'Assessment type' },
-  { text: '' },
-]
-%}
+  {%
+  set head = [
+    { text: 'Assessment type' },
+    { text: '' },
+  ]
+  %}
 
-{% set rows = [] %}
-{% for assessmentType in assessmentTypes %}
-  {% set rows = rows|merge([[
-    { text: assessmentType.name },
-    { html: '<a href="' ~ path('assessment_type_edit', {'id': assessmentType.id}) ~ '">Edit</a>' },
-  ]]) %}
-{% endfor %}
+  {% set rows = [] %}
+  {% for assessmentType in assessmentTypes %}
+    {% set rows = rows|merge([[
+      { text: assessmentType.name },
+      { html: '<a href="' ~ path('assessment_type_edit', {'id': assessmentType.id}) ~ '">Edit</a>' },
+    ]]) %}
+  {% endfor %}
 
-{{ govukTable.govukTable({
-  caption: "Assessment types",
-  captionClasses: "govuk-table__caption--m",
-  firstCellIsHeader: true,
-  head: head,
-  rows: rows
-}) }}
+  {{ govukTable.govukTable({
+    caption: "Assessment types",
+    captionClasses: "govuk-table__caption--m",
+    firstCellIsHeader: true,
+    head: head,
+    rows: rows
+  }) }}
+</div>

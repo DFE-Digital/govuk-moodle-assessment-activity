@@ -42,6 +42,9 @@ try {
         $pageurl = new moodle_url($request->getRequestUri());
         $PAGE->set_url($pageurl);
 
+        // Apply gds-container CSS fixes
+        $PAGE->requires->css('/mod/assessment/gds_container_fixes.css');
+
         $response->setContent($OUTPUT->header() . $response->getContent() . $OUTPUT->footer());
     }
 } catch (ResourceNotFoundException) {

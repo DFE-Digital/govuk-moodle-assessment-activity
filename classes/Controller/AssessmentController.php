@@ -25,8 +25,9 @@ class AssessmentController extends SwpdpController
         global $COURSE, $PAGE, $USER;
         // Moodle: Force the page type to mod-data-edit for CSS reasons
         // TODO: Unpick this
-        $PAGE->requires->css('/mod/assessment/assessment.css');
-        $PAGE->set_pagetype('mod-data-edit');
+        # Disabled temporarily to measure impact of removing this
+        #$PAGE->requires->css('/mod/assessment/assessment.css');
+        #$PAGE->set_pagetype('mod-data-edit');
 
         $repo = $this->entityManager->getRepository(Assessment::class);
         $assessment = $repo->find($id);

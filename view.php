@@ -16,6 +16,8 @@ require_login($course, true, $cm);
 $PAGE->set_title(format_string($moduleinstance->name));
 $pageurl = new moodle_url('/mod/assessment/view.php');
 $PAGE->set_url($pageurl);
+// Apply gds-container CSS fixes
+$PAGE->requires->css('/mod/assessment/gds_container_fixes.css');
 // END: Moodle (minimal)
 
 // Symfony
