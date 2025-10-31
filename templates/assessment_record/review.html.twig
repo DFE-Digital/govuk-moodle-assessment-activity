@@ -1,48 +1,51 @@
-<div class="govuk-body">
+{% import '@govuk-frontend-twig/components/table.html.twig' as govukTable %}
+
+<div class="gds-container">
   <form method="POST">
     <h1 class="govuk-heading-l">Review assessment record</h1>
 
     {% set assessmentType = assessmentRecord.assessment.assessmentType %}
 
     {% for assessmentTypeSection in assessmentType.assessmentTypeSections %}
-      <h2 class="govuk-heading-2">{{ assessmentTypeSection.name }}</h2>
+      {% set rows = [] %}
+      {% for assessmentTypeItem in assessmentTypeSection.assessmentTypeItems %}
+        {# Within the AssessmentRecord, locate the AssessmentRecordItem that matches the AssessmentTypeItem #}
+        {% set assessmentRecordItemForAssessmentTypeItem = null %}
+        {% for assessmentRecordItem in assessmentRecord.assessmentRecordItems %}
+          {% if assessmentRecordItem.assessmentTypeItem.id == assessmentTypeItem.id %}
+            {% set assessmentRecordItemForAssessmentTypeItem = assessmentRecordItem %}
+          {% endif %}
+        {% endfor %}
+        {% if assessmentRecordItemForAssessmentTypeItem %}
+          {% if assessmentTypeItem.dataType == 'checkbox' %}
+            {% set assesmentRecordItemValue = assessmentRecordItemForAssessmentTypeItem.value ? 'Yes' : 'No' %}
+          {% else %}
+            {% set assesmentRecordItemValue = assessmentRecordItemForAssessmentTypeItem.value %}
+          {% endif %}
 
-      <table class="generaltable">
-        <tbody>
-          {% for assessmentTypeItem in assessmentTypeSection.assessmentTypeItems %}
-              {# Within the AssessmentRecord, locate the AssessmentRecordItem that matches the AssessmentTypeItem #}
-              {% set assessmentRecordItemForAssessmentTypeItem = null %}
-              {% for assessmentRecordItem in assessmentRecord.assessmentRecordItems %}
-                {% if assessmentRecordItem.assessmentTypeItem.id == assessmentTypeItem.id %}
-                  {% set assessmentRecordItemForAssessmentTypeItem = assessmentRecordItem %}
-                {% endif %}
-              {% endfor %}
-              {% if assessmentRecordItemForAssessmentTypeItem %}
-                <tr>
-                  <td>{{ assessmentTypeItem.description }}</td>
-                  <td>
-                    {% if assessmentTypeItem.dataType == 'checkbox' %}
-                      {{ assessmentRecordItemForAssessmentTypeItem.value ? 'Yes' : 'No' }}
-                    {% else %}
-                      {{ assessmentRecordItemForAssessmentTypeItem.value }}
-                    {% endif %}
-                  </td>
-                  <td>
-                    {% set url = assessmentRecord.id ?
-                      path('assessment_record_edit', { id: assessmentRecord.id }) :
-                      path('assessment_record_new', { assessmentId: assessmentRecord.assessment.id })
-                    %}
-                    <a href={{ url ~ '?change=1' }}>Change</a>
-                  </td>
-                </tr>
-              {% endif %}
-          {% endfor %}
-        </tbody>
-      </table>
+          {% set url = assessmentRecord.id ?
+              path('assessment_record_edit', { id: assessmentRecord.id }) :
+              path('assessment_record_new', { assessmentId: assessmentRecord.assessment.id })
+          %}
+
+          {% set rows = rows|merge([[
+            { text: assessmentTypeItem.description },
+            { text: assesmentRecordItemValue },
+            { html: '<a href="' ~ url ~ '?change=1">Change</a>' },
+          ]]) %}
+        {% endif %}
+      {% endfor %}
+
+      {{ govukTable.govukTable({
+        caption: assessmentTypeSection.name,
+        captionClasses: "govuk-table__caption--m",
+        firstCellIsHeader: true,
+        rows: rows
+      }) }}
     {% endfor %}
 
-    <div id="sticky-footer" class="justify-content-end" data-disable="true">
-      <button type="submit" class="govuk-button" value="preview">Confirm</button>
-    </div>
+    <button type="submit" class="govuk-button" data-module="govuk-button">
+      Confirm
+    </button>
   </form>
 </div>
