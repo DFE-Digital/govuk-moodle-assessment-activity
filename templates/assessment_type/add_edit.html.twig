@@ -1,68 +1,64 @@
-<h2>
-  {% if assessmentType.id %}
-    Edit assessment type: {{ assessmentType.name }}
-  {% else %}
-    Create assessment type
-  {% endif %}
-</h2>
+{% import '@govuk-frontend-twig/components/table.html.twig' as govukTable %}
 
-{% for type, messages in flash_messages %}
+<div class="gds-container">
+  <h2 class="govuk-heading-m">
+    {% if assessmentType.id %}
+      Edit assessment type: {{ assessmentType.name }}
+    {% else %}
+      Create assessment type
+    {% endif %}
+  </h2>
+
+  {% for type, messages in flash_messages %}
     {% for message in messages %}
-        <div class="alert alert-{{ type }}">
-            {{ message }}
-        </div>
+      <div class="alert alert-{{ type }}">
+          {{ message }}
+      </div>
     {% endfor %}
-{% endfor %}
+  {% endfor %}
 
-{{ form_start(form) }}
-  {{ form_row(form.name) }}
-  {{ form_row(form.guidance_before) }}
-  {{ form_row(form.guidance_after) }}
+  {{ form_start(form) }}
+    {{ form_row(form.name) }}
+    {{ form_row(form.guidance_before) }}
+    {{ form_row(form.guidance_after) }}
 
-  {% if assessmentType.id %}
-    <h3>Sections</h3>
+    {% if assessmentType.id %}
+      <h3 class="govuk-heading-s">Sections</h3>
 
-    <a href="{{ path('assessment_type_section_new', {'assessmentTypeId': assessmentType.id}) }}">Add section</a>
+      <p><a href="{{ path('assessment_type_section_new', {'assessmentTypeId': assessmentType.id}) }}">Add section</a></p>
 
-    <div id="assessment-type-sections">
       {% for assessmentTypeSection in assessmentType.assessmentTypeSections %}
-          <table class="generaltable">
-            <thead>
-              <tr>
-                <td>
-                  <strong>{{ assessmentTypeSection.name }}</strong>
-                </td>
-                <td>
-                  <a href="{{ path('assessment_type_section_edit', {'id': assessmentTypeSection.id}) }}">Edit</a>
-                </td>
-              </tr>
-            </thead>
-            <tbody>
-              {% for assessmentTypeItem in assessmentTypeSection.assessmentTypeItems %}
-                <tr>
-                  <td>
-                    {{ assessmentTypeItem.name }}
-                  </td>
-                  <td>
-                    {{ assessmentTypeItem.description }}
-                  </td>
-                </tr>
-              {% else %}
-                <tr>
-                  <td colspan="3">No items</td>
-                </tr>
-              {% endfor %}
-            </tbody>
-          </table>
+        {%
+        set head = [
+          { text: assessmentTypeSection.name },
+          { html: '<a href="' ~ path('assessment_type_section_edit', {'id': assessmentTypeSection.id}) ~ '">Edit</a>' },
+        ]
+        %}
+
+        {% set rows = [] %}
+        {% for assessmentTypeItem in assessmentTypeSection.assessmentTypeItems %}
+          {% set rows = rows|merge([[
+            { text: assessmentTypeItem.name },
+            { text: assessmentTypeItem.description },
+          ]]) %}
+        {% endfor %}
+
+        {{ govukTable.govukTable({
+          caption: "Section",
+          captionClasses: "govuk-table__caption--m",
+          firstCellIsHeader: true,
+          head: head,
+          rows: rows
+        }) }}
       {% endfor %}
+    {% endif %}
+
+    <div style="display:none;">
+      {{ form_rest(form) }}
     </div>
-  {% endif %}
 
-  <div style="display:none;">
-    {{ form_rest(form) }}
-  </div>
-
-  <button type="submit" class="btn btn-primary">
-    Save
-  </button>
-{{ form_end(form) }}
+    <button type="submit" class="govuk-button" data-module="govuk-button">
+      Save
+    </button>
+  {{ form_end(form) }}
+</div>

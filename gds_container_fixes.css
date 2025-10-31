@@ -1,3 +1,7 @@
+.gds-container .govuk-input {
+    width: 100%;
+}
+
 .gds-container .govuk-table__header,
 .gds-container .govuk-table__cell {
     border-top: 0;

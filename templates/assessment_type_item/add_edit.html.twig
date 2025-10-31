@@ -4,38 +4,40 @@
    {% set assesssmentTypeItemType = 'item' %}
 {% endif %}
 
-<h2>
-  {% if assessmentTypeItem.id %}
-    Edit {{ assesssmentTypeItemType }} - {{ assessmentTypeItem.name }}
-  {% else %}
-    {{ assessmentTypeItem.assessmentTypeSection.name }}: Add {{ assesssmentTypeItemType }}
-  {% endif %}
-</h2>
+<div class="gds-container">
+  <h2 class="govuk-heading-m">
+    {% if assessmentTypeItem.id %}
+      Edit {{ assesssmentTypeItemType }} - {{ assessmentTypeItem.name }}
+    {% else %}
+      {{ assessmentTypeItem.assessmentTypeSection.name }}: Add {{ assesssmentTypeItemType }}
+    {% endif %}
+  </h2>
 
-{% for type, messages in flash_messages %}
+  {% for type, messages in flash_messages %}
     {% for message in messages %}
-        <div class="alert alert-{{ type }}">
-            {{ message }}
-        </div>
+      <div class="alert alert-{{ type }}">
+        {{ message }}
+      </div>
     {% endfor %}
-{% endfor %}
+  {% endfor %}
 
-{{ form_start(form) }}
-  {{ form_row(form.name) }}
-  {{ form_row(form.description) }}
-  {{ form_row(form.guidance_before) }}
-  {{ form_row(form.guidance_after) }}
+  {{ form_start(form) }}
+    {{ form_row(form.name) }}
+    {{ form_row(form.description) }}
+    {{ form_row(form.guidance_before) }}
+    {{ form_row(form.guidance_after) }}
 
-  {% if assesssmentTypeItemType == 'field' %}
-    {{ form_row(form.dataType) }}
-    {{ form_row(form.isRequired) }}
-  {% endif %}
+    {% if assesssmentTypeItemType == 'field' %}
+      {{ form_row(form.dataType) }}
+      {{ form_row(form.isRequired) }}
+    {% endif %}
 
-  <div style="display:none;">
-    {{ form_rest(form) }}
-  </div>
+    <div style="display:none;">
+      {{ form_rest(form) }}
+    </div>
 
-  <button type="submit" class="btn btn-primary">
-    Save
-  </button>
-{{ form_end(form) }}
+    <button type="submit" class="govuk-button" data-module="govuk-button">
+      Save
+    </button>
+  {{ form_end(form) }}
+</div>
