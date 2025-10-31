@@ -1,0 +1,6 @@
+.gds-container .govuk-table__header,
+.gds-container .govuk-table__cell {
+    border-top: 0;
+    border-left: 0;
+    border-right: 0;
+}
