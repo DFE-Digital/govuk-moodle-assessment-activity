@@ -187,17 +187,17 @@
     <association uuid="81cd1a51-46e7-4ec0-b18f-9604708cfb6a" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0" color="#969696"/>
     <association uuid="9c1e9d74-ed62-43ad-a702-41e7ad730f55" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0" color="#969696"/>
     <association uuid="d30ec191-2d5a-437f-8b03-ca38ee65fe3c" caption1-position-x="44" caption1-position-y="2" center-position-x="0" center-position-y="-20" color="#969696"/>
-    <entity uuid="3c959f41-3244-434c-a2f5-7ed6d64667da" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="544" position-y="170" size-x="0" size-x2="172" size-y="0" size-y2="73"/>
-    <entity uuid="47f47f14-73df-4a9b-9531-a9426fe5fdbc" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="567" position-y="40" size-x="0" size-x2="125" size-y="0" size-y2="59"/>
-    <entity uuid="52ecac73-19cb-4c56-bb01-0c0d5c3dbb13" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="18" position-y="412" size-x="0" size-x2="184" size-y="0" size-y2="158"/>
+    <entity uuid="3c959f41-3244-434c-a2f5-7ed6d64667da" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="749" position-y="339" size-x="0" size-x2="172" size-y="0" size-y2="73"/>
+    <entity uuid="47f47f14-73df-4a9b-9531-a9426fe5fdbc" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="773" position-y="9" size-x="0" size-x2="125" size-y="0" size-y2="73"/>
+    <entity uuid="52ecac73-19cb-4c56-bb01-0c0d5c3dbb13" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="25" position-y="497" size-x="0" size-x2="184" size-y="0" size-y2="158"/>
     <entity uuid="6c4efae2-4412-41b0-9a2a-52e87c42ebc5" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="134" position-y="10" size-x="0" size-x2="115" size-y="0" size-y2="73"/>
-    <entity uuid="937f49a6-bf11-496f-8d8e-19d93a382050" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="89" position-y="110" size-x="0" size-x2="215" size-y="0" size-y2="87"/>
-    <entity uuid="bb22741b-3112-4d55-9410-10061721e1e5" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="220" position-y="412" size-x="0" size-x2="184" size-y="0" size-y2="129"/>
-    <entity uuid="da08c492-32b6-4dd8-b1b7-5c69ecfe53b2" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="334" position-y="27" size-x="0" size-x2="149" size-y="0" size-y2="101"/>
-    <entity uuid="e54b49cc-06b2-4900-bdc9-f4b91834eb40" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="115" position-y="258" size-x="0" size-x2="184" size-y="0" size-y2="129"/>
+    <entity uuid="937f49a6-bf11-496f-8d8e-19d93a382050" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="87" position-y="147" size-x="0" size-x2="215" size-y="0" size-y2="115"/>
+    <entity uuid="bb22741b-3112-4d55-9410-10061721e1e5" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="220" position-y="497" size-x="0" size-x2="184" size-y="0" size-y2="129"/>
+    <entity uuid="da08c492-32b6-4dd8-b1b7-5c69ecfe53b2" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="430" position-y="-32" size-x="0" size-x2="149" size-y="0" size-y2="157"/>
+    <entity uuid="e54b49cc-06b2-4900-bdc9-f4b91834eb40" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="102" position-y="313" size-x="0" size-x2="184" size-y="0" size-y2="129"/>
     <inheritance-child uuid="0164fd36-00c1-4ab3-bbe6-fa340b97fa45" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0" color="#969696"/>
     <inheritance-child uuid="b92f2353-b1f5-425a-ac63-8c5bcbc0f6c4" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0" color="#969696"/>
-    <module uuid="a1ca636c-87e7-4cba-a356-63cde1c12f8a" bg-color="#FEFCE8" position-x="61" position-y="72" size-x="11" size-x2="752" size-y="22" size-y2="593"/>
-    <project uuid="40ad3dfb-8b19-4d48-bbf4-36ab7bd394cd" size-x="0" size-x2="1114" size-y="0" size-y2="734"/>
+    <module uuid="a1ca636c-87e7-4cba-a356-63cde1c12f8a" bg-color="#FEFCE8" position-x="61" position-y="72" size-x="11" size-x2="940" size-y="47" size-y2="675"/>
+    <project uuid="40ad3dfb-8b19-4d48-bbf4-36ab7bd394cd" size-x="0" size-x2="1114" size-y="25" size-y2="797"/>
   </visual-data>
 </skipper>
