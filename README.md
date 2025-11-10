@@ -16,7 +16,7 @@ and extract all files into your Moodle site's activity module plugin directory `
 All top-level files (`index.php`, `version.php`, etc) should be visible in `/my-moodle-site/public/mod/assessment`.
 
 Moodle will detect the Assessment activity module plugin when started. Once installation is confirmed, the required Moodle
-database tables will be created:
+database tables are created:
 
 - mdl_assessment
 - mdl_assessment_record
@@ -30,12 +30,26 @@ selecting the newly-available **Assessment** activity.
 
 ## Business model
 
-![Asssessment activity module business model](design/business_model.png)
+![Assessment activity module business model](design/business_model.png)
 
-- When an Assessment activity is addded to a Moodle course, an `Assessment` is created. Each `Assessment` has a `name` and is associated with one `AssessmentType`.
-- An `AssessmentType` contains zero or more `AssessmentTypeSections`, which can be reordered by changing each `AssessmentTypeSection`'s `displayOrder`.
-- An `AssessmentTypeSection` contains zero or more `AssessmentTypeItems`, which can be reordered by changing each `AssessmentTypeItem`'s `displayOrder`.
-- `AssessmentTypeItem` is a base class extended by a single class `AssessmentTypeField`, but this can be expanded to more subclasses when required.
-- An `AssessmentTypeField` is a data field (text, textbox, date, checkbox) that can be rendered for data collection.
-- When a user completes an `Assessment`, an `AssessmentRecord` is created, with as many `AssessmentRecordItems` as there are `AssessmentTypeItems`
-for the `Assessment`'s `AssessmentType`'s `AssessmentTypeItems`.
+- When an Assessment activity is added to a Moodle course, an `Assessment` is created.
+  - Each `Assessment` has a `name` (and other data) and is associated with one Moodle course and one `AssessmentType`.
+- An `AssessmentType` has a `name` (and other data) and contains zero or more `AssessmentTypeSections`.
+  - Each `AssessmentTypeSection` can be reordered within its `AssessmentType` by updating its `displayOrder`.
+- An `AssessmentTypeSection` has a `name` (and other data) and contains zero or more `AssessmentTypeItems`.
+  - Each `AssessmentTypeItem` can be reordered within its `AssessmentTypeSection` by updating its `displayOrder`.
+- `AssessmentTypeItem` is a base class extended by a single class `AssessmentTypeField`, but this can be expanded to more subclasses if required.
+- An `AssessmentTypeField` is a data field (text, textbox, date, checkbox) which is rendered for data collection.
+- When a user completes an `Assessment`, an `AssessmentRecord` is created.
+  - The `AssessmentRecord` is associated with one `Assessment` and one Moodle user.
+  - It contains as many `AssessmentRecordItems` as there are `AssessmentTypeItems` associated with the `Assessment`'s `AssessmentType`.
+
+## Technology
+
+The Assessment activity module plugin leverages some well-tested [Symfony](https://symfony.com/) components which provide
+routing, input forms/validation, database abstraction, security, performance caching and language translation.
+
+Symfony fully adheres to the [Model-View-Controller](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller) design pattern
+and provides middleware components that support flexible and maintainable development of the Assessment activity module plugin.
+
+The Asssessment activity provides custom functionality while retaining access to all core Moodle functionality, where required.
