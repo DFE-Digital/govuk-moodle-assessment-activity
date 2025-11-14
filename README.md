@@ -4,7 +4,9 @@ A GOV.UK Moodle activity module plugin implementing data collection and workflow
 Requirements are guided by the Social Work Practice Development Programme (SWPDP) and are subject to ongoing
 enhancement through a User-Centred Design (UCD) approach.
 
-**The Assessment activity module plugin has been created to run within a standard Moodle v4.5.5 installation.**
+**The Assessment activity module plugin has been created to run within a standard Moodle v4.5.5 installation.
+It also depends on the [GOV.UK Moodle theme](https://github.com/DFE-Digital/govuk-moodle-theme) being installed,
+because it renders GDS-compliant output.**
 
 ## Activity module plugin installation
 
@@ -53,3 +55,12 @@ Symfony fully adheres to the [Model-View-Controller](https://en.wikipedia.org/wi
 and provides middleware components that support flexible and maintainable development of the Assessment activity module plugin.
 
 The Asssessment activity provides custom functionality while retaining access to all core Moodle functionality, where required.
+
+## Business model change process
+- Update the business model design:
+  - EITHER use [Skipper](https://www.skipper18.com/) to update `design\Assessment activity.skipper` and export the diagram as a series of Doctrine XML files in `doctrine\`.
+  - OR make changes directly to the Doctrine XML files in `doctrine\`.
+- Make the corresponding changes to the business model entities in `classes\Entity`, creating new entities for any new business classes.
+- Generate the Doctrine migrations from the updated model: `php /my-moodle-site/public/mod/assessment/bin/console migrations:diff --filter-expression="/^mdl_assessment/"`.
+- Increment `$plugin->version` in `version.php`.
+- When Moodle detects the incremented version (via **Site administration**) `upgrade.php` will run in any new migrations.
