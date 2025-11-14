@@ -18,7 +18,7 @@ and extract all files into your Moodle site's activity module plugin directory `
 All top-level files (`index.php`, `version.php`, etc) should be visible in `/my-moodle-site/public/mod/assessment`.
 
 Moodle will detect the Assessment activity module plugin when started. Once installation is confirmed, the required Moodle
-database tables are created: `db/install.php` creates an initial Moodle database table from `db\install.xml`, then runs in the required Doctrine migrations from `classes\Migrations\`.
+database tables are created: `db/install.php` creates an initial Moodle database table from `db/install.xml`, then runs in the required Doctrine migrations from `classes/Migrations/`.
 
 - mdl_assessment
 - mdl_assessment_record
@@ -58,9 +58,9 @@ The Asssessment activity provides custom functionality while retaining access to
 
 ## Business model change process
 - Update the business model design:
-  - EITHER use [Skipper](https://www.skipper18.com/) to update `design\Assessment activity.skipper` and export the diagram as a series of Doctrine XML files in `doctrine\`.
-  - OR make changes directly to the Doctrine XML files in `doctrine\`.
-- Make the corresponding changes to the business model entities in `classes\Entity`, creating new entities for any new business classes.
+  - EITHER use [Skipper](https://www.skipper18.com/) to update `design/Assessment activity.skipper` and export the diagram as a series of Doctrine XML files in `doctrine/`.
+  - OR make changes directly to the Doctrine XML files in `doctrine/`.
+- Make the corresponding changes to the business model entities in `classes/Entity`, creating new entities for any new business classes.
 - Generate the Doctrine migrations from the updated model: `php /my-moodle-site/public/mod/assessment/bin/console migrations:diff --filter-expression="/^mdl_assessment/"`.
 - Increment `$plugin->version` in `version.php`.
-- When Moodle detects the incremented version (via **Site administration**) `db/upgrade.php` runs in any new migrations from `classes\Migrations\`.
+- When Moodle detects the incremented version (via **Site administration**) `db/upgrade.php` runs in any new migrations from `classes/Migrations/`.
