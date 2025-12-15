@@ -1,3 +1,9 @@
+## ⚠️ Project Archived
+
+This repository has been archived and is no longer being maintained. The project has been discontinued, and this codebase is no longer required.
+
+Note: The code is provided as-is for historical reference only. No further updates, bug fixes, or pull requests will be accepted.
+
 # GOV.UK Moodle Assessment activity
 
 A GOV.UK Moodle activity module plugin implementing data collection and workflow for an Assessment activity.
